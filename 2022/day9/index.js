@@ -25,14 +25,13 @@ function move(lines, knots)
 
     for (let i = 0; i < knots; i++)
     {
-        state.pos.push(
-            {
-                x: 0,
-                y: 0,
-            });
+        state.pos.push({ x: 0, y: 0, });
     }
 
     state.tail.add("0,0");
+
+    let head = state.pos[0];
+    let tail = state.pos[knots - 1];
 
     for (let line of lines)
     {
@@ -43,10 +42,10 @@ function move(lines, knots)
         {
             switch (direction)
             {
-                case "L": state.pos[0].x--; break;
-                case "R": state.pos[0].x++; break;
-                case "U": state.pos[0].y--; break;
-                case "D": state.pos[0].y++; break;
+                case "L": head.x--; break;
+                case "R": head.x++; break;
+                case "U": head.y--; break;
+                case "D": head.y++; break;
             }
 
             for (let i = 1; i < knots; i++)
@@ -54,7 +53,7 @@ function move(lines, knots)
                 moveTail(state.pos[i - 1], state.pos[i]);
             }
 
-            state.tail.add(`${state.pos[knots - 1].x},${state.pos[knots - 1].y}`);
+            state.tail.add(`${tail.x},${tail.y}`);
         }
     }
 
@@ -71,58 +70,27 @@ function moveTail(head, tail)
         if (head.y === tail.y)
         {
             // Same row
-            if (tail.x < head.x)
-            {
-                // Move right
-                tail.x++;
-            }
-            else
-            {
-                // Move left
-                tail.x--;
-                
-            }
+            tail.x = tail.x < head.x ?
+                tail.x + 1 :
+                tail.x - 1;
         }
         else if (head.x === tail.x)
         {
             // Same column
-            if (tail.y < head.y)
-            {
-                // Move down
-                tail.y++;
-            }
-            else
-            {
-                // Move up
-                tail.y--;
-            }
+            tail.y = tail.y < head.y ?
+                tail.y + 1 :
+                tail.y - 1;
         }
         else
         {
-            if (tail.x < head.x && tail.y < head.y)
-            {
-                // Move _\|
-                tail.x++;
-                tail.y++;
-            }
-            else if (tail.x > head.x && tail.y < head.y)
-            {
-                // Move |/_
-                tail.x--;
-                tail.y++;
-            }
-            else if (tail.x < head.x && tail.y > head.y)
-            {
-                // Move ‾/|
-                tail.y--;
-                tail.x++;
-            }
-            else if (tail.x > head.x && tail.y > head.y)
-            {
-                // Move |\‾
-                tail.y--;;
-                tail.x--;
-            }
+            // Diagonal
+            tail.x = tail.x < head.x ?
+                tail.x + 1 :
+                tail.x - 1;
+
+            tail.y = tail.y < head.y ?
+                tail.y + 1 :
+                tail.y - 1;
         }
     }
 }
