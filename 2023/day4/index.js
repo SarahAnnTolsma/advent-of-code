@@ -2,8 +2,13 @@ let fs = require("fs");
 
 let input = fs.readFileSync("input.txt", "utf-8");
 let lines = input.split("\n");
+let games = [ ];
 
-let sum = 0;
+function Game(winners, numbers)
+{
+    this.winners = winners;
+    this.numbers = numbers;
+}
 
 for (let line of lines)
 {
@@ -17,17 +22,56 @@ for (let line of lines)
     let winners = new Set(numbers[0].split(/ /g).map(n => Number.parseInt(n)));
     let ours    = new Set(numbers[1].split(/ /g).map(n => Number.parseInt(n)));
 
-    let points = 0;
+    games.push(new Game(winners, ours));
+}
 
-    for (let number of ours)
+function part1()
+{
+    let sum = 0;
+
+    for (let game of games)
     {
-        if (winners.has(number))
+        let points = 0;
+
+        for (let number of game.numbers)
         {
-            points = Math.max(points * 2, 1);
+            if (game.winners.has(number))
+            {
+                points = Math.max(points * 2, 1);
+            }
+        }
+
+        sum += points;
+    }
+
+    console.log(sum);
+}
+
+function part2()
+{
+    let counts = Array(games.length).fill(1);
+
+    for (let i = 0; i < games.length; i++)
+    {
+        let game = games[i];
+        let count = 0;
+
+        for (let number of game.numbers)
+        {
+            if (game.winners.has(number))
+            {
+                count++;
+            }
+        }
+
+        for (let n = 0; n < count; n++)
+        {
+            counts[i + n + 1] += counts[i];
         }
     }
 
-    sum += points;
+    console.log(counts.reduce((a, b) => a + b, 0));
 }
 
-console.log(sum);
+part1();
+part2();
