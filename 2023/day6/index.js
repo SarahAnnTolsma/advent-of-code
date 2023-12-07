@@ -18,7 +18,7 @@ let distances = lines[1]
 function part1()
 {
     // Just bruteforce, the numbers are small enough.
-    let ways = [ ];
+    let ways = 1;
 
     for (let i = 0; i < times.length; i++)
     {
@@ -39,12 +39,10 @@ function part1()
             }
         }
 
-        ways.push(count);
+        ways *= count;
     }
 
-    let multiplied = ways.reduce((a, b) => a * b, 1);
-
-    console.log(multiplied);
+    console.log(ways);
 }
 
 function part2()
